@@ -1,0 +1,113 @@
+/* Global page styling */
+body {
+  background-color: #E9F5EC; /* soft sage green */
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Pickleball section styling */
+.pickleball {
+  background-color: #ccffcc; /* light green card */
+  padding: 30px;
+  margin: 30px auto;
+  width: 80%;
+  max-width: 800px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Pickleball word color */
+.pickleball-word {
+  color: #006400; /* dark green */
+}
+
+/* Center images + videos */
+img, iframe {
+  display: block;
+  margin: 20px auto;
+  max-width: 90%;
+  border-radius: 10px;
+}
+
+/* Headings */
+h1, h2, h3 {
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+ul {
+  list-style-position: inside;
+  display: inline-block;
+  text-align: left;
+  margin: 0 auto;
+  padding-left: 0;
+}
+.photo-box {
+  background-color: #ccffcc; /* same green as your list box */
+  padding: 50px;
+  margin: 50px auto;
+  width: fit-content;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.anchor-link {
+  color: #006400;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.anchor-link:hover {
+  text-decoration: underline;
+}
+.back-button {
+  background-color: #006400; /* dark green */
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  margin: 20px auto;
+}
+
+.back-button:hover {
+  background-color: #004d00; /* darker green on hover */
+}
+
+.white-button {
+  background-color: #006400; /* dark green */
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  margin: 20px auto;
+}
+body, h1, h2, h3, p, span, button, .letter, .tile {
+  color: #006400 !important; /* dark green */
+}
+.tile {
+  color: #e1e9e1 !important;
+  font-weight: bold;
+}
+.keyboard button {
+  color: white !important;      /* makes the letters white */
+  font-weight: bold;            /* optional: makes them easier to read */
+}
+body {
+  background-color: #E9F5EC !important;
+}
+.tableau-box {
+  background-color: #ccffcc; /* your light green */
+  padding: 20px;
+  margin: 30px auto;         /* THIS centers it */
+  width: fit-content;        /* makes the box shrink to the graph */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;        /* helps center internal content */
+}
+
+
+

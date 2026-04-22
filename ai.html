@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini Wordle – 4 Letter Game</title>
+   <link rel="stylesheet" href="css/mystyles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #game {
+      margin-top: 20px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .tile {
+      width: 50px;
+      height: 50px;
+      border: 2px solid #4b5563;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      font-weight: bold;
+      background: #111827;
+      color: #f9fafb;
+    }
+
+    .tile.correct {
+      background: #22c55e; /* green */
+      border-color: #22c55e;
+      color: #111827;
+    }
+
+    .tile.present {
+      background: #eab308; /* yellow */
+      border-color: #eab308;
+      color: #111827;
+    }
+
+    .tile.absent {
+      background: #4b5563; /* gray */
+      border-color: #4b5563;
+      color: #e5e7eb;
+    }
+
+    .keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .key-row {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .key {
+      padding: 8px 10px;
+      border: none;
+      border-radius: 4px;
+      background: #374151;
+      color: #f9fafb;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 30px;
+      text-transform: uppercase;
+    }
+
+    .key.special {
+      background: #6b7280;
+      min-width: 60px;
+    }
+
+    .key:active {
+      transform: scale(0.97);
+    }
+
+    #message {
+      min-height: 24px;
+      margin-top: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>4-Letter Wordle</h1>
+  <p>Guess the 4-letter word in 6 tries. Click letters to build your guess.</p>
+
+  <div id="game">
+    <div id="board" class="board"></div>
+
+    <div class="keyboard">
+      <div class="key-row">
+        <button class="key">q</button>
+        <button class="key">w</button>
+        <button class="key">e</button>
+        <button class="key">r</button>
+        <button class="key">t</button>
+        <button class="key">y</button>
+        <button class="key">u</button>
+        <button class="key">i</button>
+        <button class="key">o</button>
+        <button class="key">p</button>
+      </div>
+      <div class="key-row">
+        <button class="key">a</button>
+        <button class="key">s</button>
+        <button class="key">d</button>
+        <button class="key">f</button>
+        <button class="key">g</button>
+        <button class="key">h</button>
+        <button class="key">j</button>
+        <button class="key">k</button>
+        <button class="key">l</button>
+      </div>
+      <div class="key-row">
+        <button class="key special" data-action="delete">Del</button>
+        <button class="key">z</button>
+        <button class="key">x</button>
+        <button class="key">c</button>
+        <button class="key">v</button>
+        <button class="key">b</button>
+        <button class="key">n</button>
+        <button class="key">m</button>
+        <button class="key special" data-action="enter">Enter</button>
+      </div>
+    </div>
+
+    <div id="message"></div>
+  </div>
+
+  <script>
+    const WORDS = [
+      "farm", "milk", "corn", "seed", "soil", "grow", "tree", "leaf",
+      "wind", "rain", "snow", "bird", "goat", "lamb", "barn", "yard",
+      "road", "hill", "lake", "pond", "root", "bush", "weed", "crop"
+    ];
+
+    const ANSWER = WORDS[Math.floor(Math.random() * WORDS.length)];
+    const MAX_GUESSES = 6;
+    const WORD_LENGTH = 4;
+
+    let currentRow = 0;
+    let currentCol = 0;
+    let gameOver = false;
+
+    const board = document.getElementById("board");
+    const messageEl = document.getElementById("message");
+
+    function createBoard() {
+      for (let r = 0; r < MAX_GUESSES; r++) {
+        const row = document.createElement("div");
+        row.classList.add("row");
+        row.setAttribute("data-row", r);
+        for (let c = 0; c < WORD_LENGTH; c++) {
+          const tile = document.createElement("div");
+          tile.classList.add("tile");
+          tile.setAttribute("data-col", c);
+          row.appendChild(tile);
+        }
+        board.appendChild(row);
+      }
+    }
+
+    createBoard();
+
+    function setMessage(msg) {
+      messageEl.textContent = msg;
+    }
+
+    function getCurrentRowTiles() {
+      const row = board.querySelector(`.row[data-row="${currentRow}"]`);
+      return Array.from(row.children);
+    }
+
+    function addLetter(letter) {
+      if (gameOver) return;
+      if (currentCol >= WORD_LENGTH) return;
+      const tiles = getCurrentRowTiles();
+      tiles[currentCol].textContent = letter;
+      currentCol++;
+    }
+
+    function deleteLetter() {
+      if (gameOver) return;
+      if (currentCol === 0) return;
+      currentCol--;
+      const tiles = getCurrentRowTiles();
+      tiles[currentCol].textContent = "";
+    }
+
+    function checkGuess() {
+      if (gameOver) return;
+
+      if (currentCol < WORD_LENGTH) {
+        setMessage("Not enough letters.");
+        return;
+      }
+
+      const tiles = getCurrentRowTiles();
+      const guess = tiles.map(t => t.textContent.toLowerCase());
+      const guessWord = guess.join("");
+
+      const answerArray = ANSWER.split("");
+      const result = Array(WORD_LENGTH).fill("absent");
+
+      const letterCount = {};
+      answerArray.forEach(l => letterCount[l] = (letterCount[l] || 0) + 1);
+
+      for (let i = 0; i < WORD_LENGTH; i++) {
+        if (guess[i] === answerArray[i]) {
+          result[i] = "correct";
+          letterCount[guess[i]]--;
+        }
+      }
+
+      for (let i = 0; i < WORD_LENGTH; i++) {
+        if (result[i] === "correct") continue;
+        if (letterCount[guess[i]] > 0) {
+          result[i] = "present";
+          letterCount[guess[i]]--;
+        }
+      }
+
+      for (let i = 0; i < WORD_LENGTH; i++) {
+        tiles[i].classList.add(result[i]);
+      }
+
+      if (guessWord === ANSWER) {
+        setMessage(`You win! The word was "${ANSWER.toUpperCase()}"`);
+        gameOver = true;
+        return;
+      }
+
+      currentRow++;
+      currentCol = 0;
+
+      if (currentRow === MAX_GUESSES) {
+        setMessage(`Out of guesses! The word was "${ANSWER.toUpperCase()}"`);
+        gameOver = true;
+      } else {
+        setMessage("");
+      }
+    }
+
+    document.querySelectorAll(".key").forEach(key => {
+      key.addEventListener("click", () => {
+        const action = key.getAttribute("data-action");
+        const letter = key.textContent.trim().toLowerCase();
+
+        if (action === "delete") {
+          deleteLetter();
+        } else if (action === "enter") {
+          checkGuess();
+        } else {
+          addLetter(letter);
+        }
+      });
+    });
+  </script>
+  <a href="index.html"class="white-button">back to the Main Page</a>
+</body>
+</html>
+
